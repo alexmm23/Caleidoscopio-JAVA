@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Caleidoscopio extends JPanel implements ActionListener {
 
@@ -17,7 +18,7 @@ public class Caleidoscopio extends JPanel implements ActionListener {
 
     public Caleidoscopio() {
         this.timer = new Timer(100, this);
-        this.fondo = new ImageIcon("src/fondo.jpg").getImage();
+        this.fondo = new ImageIcon("src/fondo5.jpg").getImage();
         this.cuadrados = new ArrayList<>();
         this.triangulos = new ArrayList<>();
         inicializarCuadrados();
@@ -27,33 +28,29 @@ public class Caleidoscopio extends JPanel implements ActionListener {
 
     private void inicializarCuadrados() {
         int size = 100;
-        int cantidad = 10;
+        int cantidad = 18;
 
         for (int i = 0; i < cantidad; i++) {
             int rotacion = i * incrementoRotacion;
-            cuadrados.add(new Cuadrado(size, rotacion, Color.BLACK, true));
-            cuadrados.add(new Cuadrado(size * 6, -rotacion, Color.GREEN, false));
-            cuadrados.add(new Cuadrado(size * 5, rotacion, Color.yellow, true));
-            cuadrados.add(new Cuadrado(size * 4, -rotacion, Color.BLUE, true));
-            cuadrados.add(new Cuadrado(size * 2, rotacion, Color.RED, false));
+            cuadrados.add(new Cuadrado(size, rotacion, Color.GREEN, true));
+            cuadrados.add(new Cuadrado(size * 7, -rotacion, Color.GREEN, false));
+            cuadrados.add(new Cuadrado(size * 5, rotacion, Color.blue, false));
+            cuadrados.add(new Cuadrado(size, -rotacion, Color.gray, false));
+            cuadrados.add(new Cuadrado(size * 3, rotacion, Color.yellow, false));
+            cuadrados.add(new Cuadrado(size * 2, -rotacion, Color.BLUE, true));
+            cuadrados.add(new Cuadrado(size, rotacion, Color.RED, false));
 
         }
     }
 
     private void inicializarTriangulos() {
-        int size = 100;
-        int cantidad = 15;
+        int size = 50;
+        int cantidad = 12;
 
         for (int i = 0; i < cantidad; i++) {
             int rotacion = i * incrementoRotacion;
-            triangulos.add(new Triangulo(size, rotacion, Color.BLACK));
-            triangulos.add(new Triangulo(size * 2, -rotacion, Color.RED));
-            triangulos.add(new Triangulo(size * 3, rotacion, Color.BLUE));
-            triangulos.add(new Triangulo(size * 4, -rotacion, Color.GREEN));
-            triangulos.add(new Triangulo(size * 5, rotacion, Color.YELLOW));
-            triangulos.add(new Triangulo(size * 6, -rotacion, Color.PINK));
-            triangulos.add(new Triangulo(size * 7, rotacion, Color.ORANGE));
-            triangulos.add(new Triangulo(size * 8, -rotacion, Color.MAGENTA));
+            triangulos.add(new Triangulo(size, rotacion, Color.magenta));
+            triangulos.add(new Triangulo(size, -rotacion, Color.RED));
         }
     }
 
@@ -75,7 +72,12 @@ public class Caleidoscopio extends JPanel implements ActionListener {
         AffineTransform old = g2d.getTransform();
         Color color = cuadrado.color;
         g2d.translate(centroX, centroY);
-        g2d.rotate(Math.toRadians(cuadrado.rotacionActual));
+        if (cuadrado.rotacionActual < 0) {
+            g2d.rotate(-Math.toRadians(cuadrado.rotacionActual));
+        } else {
+            g2d.rotate(Math.toRadians(cuadrado.rotacionActual));
+        }
+        g2d.shear(0.2, 0.2);
         g2d.setColor(color);
         if (cuadrado.relleno) {
             g2d.fillRect(-cuadrado.size / 2, -cuadrado.size / 2, cuadrado.size, cuadrado.size);
@@ -98,7 +100,11 @@ public class Caleidoscopio extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         for (Cuadrado cuadrado : cuadrados) {
-            cuadrado.rotacionActual += 2;
+            if (cuadrado.rotacionActual < 0) {
+                cuadrado.rotacionActual -= 2;
+            } else {
+                cuadrado.rotacionActual += 2;
+            }
         }
         repaint();
     }
